@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>safecolor</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>All</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>    var colors = [UIColor]()
+    func generageWebSafeColor() {
+        let colorIndex: [CGFloat] = [0, 51/255, 102/255, 153/255, 204/255, 1]
+        for i in colorIndex {
+            for j in colorIndex {
+                for k in colorIndex {
+                    colors.append(UIColor(red: i, green: j, blue: k, alpha: 1))
+                }
+            }
+        }
+    }</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>4002C8B3-7CE8-4368-BFD5-837CB4292A5F</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Generic</string>
+	<key>IDECodeSnippetTitle</key>
+	<string>lc_safecolor</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>2</integer>
+</dict>
+</plist>

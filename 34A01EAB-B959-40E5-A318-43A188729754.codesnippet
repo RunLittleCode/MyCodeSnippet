@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>xx_base_tableview_controller</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>TopLevel</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>static NSInteger pageLength = 20;
+
+@interface SDGFriendsMainController ()&lt;UITableViewDelegate, UITableViewDataSource&gt;
+{
+    NSMutableArray&lt;SDGFriendInfo *&gt; * friendArray;
+    UITableView * theTableView;
+    BOOL isLoading;
+    BOOL isRefresh;
+    NSInteger pageIndex;
+}
+@end
+
+@implementation SDGFriendsMainController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    friendArray = [NSMutableArray new];
+    isLoading = NO;
+    pageIndex = 0;
+    
+    theTableView = [[UITableView alloc] init];
+    theTableView.backgroundColor = self.view.backgroundColor;
+    theTableView.delegate = self;
+    theTableView.dataSource = self;
+    theTableView.rowHeight = 121;
+    theTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.view addSubview:theTableView];
+    [theTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
+    
+    __weak typeof(self) weakself = self;
+    MJRefreshHeader * header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        isRefresh = YES;
+        [weakself getFriendListRequest];
+    }];
+    theTableView.mj_header = header;
+    MJRefreshFooter * footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        isRefresh = NO;
+        pageIndex = pageIndex + 1;
+        [weakself getFriendListRequest];
+    }];
+    theTableView.mj_footer = footer;
+    [header beginRefreshing];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc {
+    theTableView.delegate = nil;
+    theTableView.dataSource = nil;
+}
+
+#pragma mark - UITableViewDelegate &amp; UITableViewDataSource
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 0;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [friendArray count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cellIdentify"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cellIdentify"];
+    }
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark - request method
+- (void)getFriendListRequest {
+    if (isLoading) {
+        return;
+    }
+    isLoading = YES;
+    __weak typeof(self) weakself = self;
+    [SDGFriendClient getFriendListWithPageIndex:pageIndex pageLength:pageLength andCompletion:^(BOOL success, NSArray *friends) {
+        [weakself handGetFriendListRequest:success andResult:friends];
+    }];
+}
+
+- (void)handGetFriendListRequest:(BOOL)success andResult:(NSArray *)array{
+    isLoading = NO;
+    if (success) {
+        if (isRefresh) {
+            [friendArray removeAllObjects];
+        }
+        [friendArray addObjectsFromArray:array];
+        [theTableView reloadData];
+        if (isRefresh) {
+            [theTableView.mj_header endRefreshing];
+        }
+        [theTableView.mj_footer endRefreshing];
+    }else{
+        [theTableView.mj_header endRefreshing];
+        [theTableView.mj_footer endRefreshing];
+    }
+}
+@end</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>34A01EAB-B959-40E5-A318-43A188729754</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Objective-C</string>
+	<key>IDECodeSnippetTitle</key>
+	<string>basetableviewcontroller</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>2</integer>
+</dict>
+</plist>
